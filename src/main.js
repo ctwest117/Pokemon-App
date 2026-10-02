@@ -1,23 +1,24 @@
 import './style.css'
-import { getPokemonData } from './make-request';
-window.getPokemonData = getPokemonData;
+import { renderPokemon } from './pokemon-render';
 window.renderPokemon = renderPokemon
 
-// log the response for dev
+const allyInput = document.getElementById('ally-pokemon')
+const allyBtn = document.getElementById('ally-btn')
+const enemyInput = document.getElementById('enemy-pokemon')
+const enemyBtn = document.getElementById('enemy-btn')
 
-getPokemonData('pikachu')
+allyBtn.addEventListener('click', () => renderPokemon(allyInput.value , 'ally'))
+enemyBtn.addEventListener('click', () => renderPokemon(enemyInput.value , 'enemy'))
 
-async function renderPokemon(nameOrId) {
-   const pokemon = await getPokemonData(nameOrId)
-   const container = document.querySelector('#app')
-  container.innerHTML = `
-    <section id="center">
-      <div class="hero">
-        <img src="${pokemon.image}"alt="${pokemon.name}" class="w-50 h-50">
-        <p class='text-center'>${pokemon.name}</p>
-      </div>
-    </section>
-  `;
-}
-
-renderPokemon('charizard');
+allyInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        allyBtn.click();
+    }
+})
+enemyInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        enemyBtn.click();
+    }
+})
+renderPokemon('charmander' , 'enemy');
+renderPokemon('pikachu', 'ally')

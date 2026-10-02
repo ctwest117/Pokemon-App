@@ -8,6 +8,6 @@ export async function getPokemonData(pokemon) {
     let data = await response.json()
     let poke = transformPokemon(data)
     return poke
-  } catch (error){console.log(error.message, ` Could not find ${pokemon} ` )}
+  } catch (error){console.log(error.message, ` Could not find ${pokemon} `), alert(`${error.message } Could not find ${pokemon}`)}
 }
 

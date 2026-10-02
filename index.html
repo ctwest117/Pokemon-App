@@ -2,17 +2,68 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/src/assets/poke-ball.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pokemon-app</title>
+    <link rel="icon" type="image/png" href="/src/assets/poke-ball.png">
+    <title>Pokemon</title>
   </head>
-  <body class="h-[100vh] w-[100vw]">
-    <header>
+  <!-- Fill the browser window, hide scrollbars, and set the muted battlefield background. -->
+  <body class="m-0 min-h-screen overflow-hidden bg-[#e3e4de] font-mono text-[#171720]">
+    <main class="flex h-screen flex-col">
+      <!-- The battle field uses a 4-column by 4-row CSS grid. Grid placement below
+           positions the status cards and platforms without absolute page coordinates. -->
+      <section aria-label="Pokemon battle" class="grid min-h-0 flex-1 grid-cols-4 grid-rows-4 gap-x-3 gap-y-1 px-3 pt-3 sm:gap-x-5 sm:px-6 sm:pt-5">
+        <!-- Opponent status card: upper-left two grid columns. The level span is
+             updated by main.js after the Pokemon data loads. -->
+        <div class="col-span-2 col-start-1 row-start-1 flex items-start p-1 sm:p-2">
+          <div class="relative w-full max-w-[13rem] rounded-md border-[3px] border-[#191923] bg-[#f2f2d3] px-2 py-1 shadow-[5px_5px_0_#41404c] sm:max-w-[15rem] sm:border-4 sm:px-3">
+            <div class="flex items-center justify-between text-xs leading-5 sm:text-base"><span id="enemy-name">Opponent</span><span>Lvl <span id="enemy-level">00</span></span></div>
+            <div class="ml-auto flex w-4/5 items-center gap-1 rounded-full bg-[#41404c] px-1 py-0.5">
+              <span class="bg-[#ed755b] px-1 text-[9px] font-bold text-white rounded-full ">HP</span><div class="h-1.5 flex-1 overflow-hidden rounded-full border border-white bg-[#73d8b0]"><div class="h-full w-full bg-[#73d8b0]"></div></div>
+            </div>
+            <!-- Layered triangles point right toward the opponent platform. -->
+            <span aria-hidden="true" class="absolute bottom-0 -right-5 h-0 w-0 border-y-[9px] border-l-[12px] border-y-transparent border-l-[#191923]"></span>
+          </div>
+        </div>
 
-    </header>
-    <div id="app" class="flex justify-center items-center w-full h-full">
+        <!-- Opponent platform: lower-right area of the grid. The two nested ovals
+             make the platform rim and center; #enemy is where main.js inserts its sprite. -->
+        <div class="col-span-2 col-start-3 row-span-2 row-start-2 flex items-center justify-center">
+          <div class="relative flex h-full w-full items-center justify-center">
+            <div class="absolute bottom-2 h-14 w-[95%] rounded-[50%] bg-[#c6c7ae] p-2 sm:h-20"><div class="h-full w-full rounded-[50%] bg-[#adaf96]"></div></div>
+            <div id="enemy" class="relative z-10 -translate-y-5 flex h-full w-full items-end justify-center"></div>
+          </div>
+        </div>
 
-    </div>
+        <!-- Player platform: lower-left grid area. #ally receives the player's back sprite. -->
+        <div class="col-span-2 col-start-1 row-span-2 row-start-3 flex items-center justify-center">
+          <div class="relative flex h-full w-full items-center justify-center">
+            <div class="absolute bottom-0 h-12 w-[95%] rounded-[50%] bg-[#c6c7ae] p-2 sm:h-16"><div class="h-full w-full rounded-[50%] bg-[#adaf96]"></div></div>
+            <div id="ally" class="relative z-10 flex h-full w-full items-end justify-center"></div>
+          </div>
+        </div>
+
+        <!-- Player status card: lower-right, layered over the field using z-20.
+             The level span is populated by main.js; the HP bar is a visual placeholder. -->
+        <div class="col-span-2 col-start-3 row-span-2 row-start-3 flex items-end justify-end p-1 pb-2 sm:p-2">
+          <div class="relative z-20 w-full max-w-[13rem] rounded-md border-[3px] border-[#191923] bg-[#f2f2d3] px-2 py-1 shadow-[5px_5px_0_#41404c] sm:max-w-[15rem] sm:border-4 sm:px-3">
+            <div class="flex items-center justify-between text-xs leading-5 sm:text-base"><span id="ally-name">NAME</span><span>Lvl <span id="ally-level">00</span></span></div>
+            <div class="ml-auto flex w-4/5 items-center gap-1 rounded-full bg-[#41404c] px-1 py-0.5"><span class="bg-[#ed755b] px-1 text-[9px] font-bold text-white rounded-full">HP</span><div class="h-1.5 flex-1 overflow-hidden rounded-full border border-white bg-[#73d8b0]"></div></div>
+            <!-- Layered triangles point left toward the player platform. -->
+            <span aria-hidden="true" class="absolute top-0 -left-5 h-0 w-0 border-y-[9px] border-r-[12px] border-y-transparent border-r-[#191923]"></span>
+          </div>
+        </div>
+      </section>
+      <!-- Bottom battle menu frame: orange outer border, dark inset line, and teal panel. -->
+      <nav id="menu" aria-label="Battle options" class="h-[28vh] min-h-24 border-[5px] border-[#dc553d] bg-[#267b89] p-1.5 shadow-[inset_0_0_0_2px_#232330] sm:border-[7px] sm:p-2">
+        <div class="h-full rounded-xl border border-[#54a1a4] bg-[#57969a] grid grid-cols-3 grid-rows-2 gap-4">
+          <div class="col-span-2 flex justify-end items-center"><span class='text-center w-[20%]'>Ally Pok&eacute;mon</span><input id="ally-pokemon" type="text" value="Pikachu" class="w-[70%] h-[40%] bg-amber-50 rounded-md"></div>
+          <div class="col-start-3 flex justify-start items-center"><button id="ally-btn" type="button" class="bg-lime-800 w-[50%] h-[40%] rounded-lg border-lime-950 border-b-3 border-r-3 active:border-t-3 active:border-b-0 active:border-l-3 active:border-r-0">Enter</button></div>
+          <div class="col-span-2 row-start-2 flex justify-end items-center"><span class='text-center w-[20%]'>Enemy Pok&eacute;mon</span><input id="enemy-pokemon" type="text" value="Charmander" class="w-[70%] h-[40%] bg-amber-50 rounded-md"></div>
+          <div class="col-start-3 row-start-2 flex justify-start items-center"><button id="enemy-btn" type="button" class="bg-lime-800 w-[50%] h-[40%] rounded-lg border-b-3 border-r-3 active:border-t-3 active:border-b-0 active:border-l-3 active:border-r-0">Enter</button></div>
+        </div>
+      </nav>
+    </main>
+    <!-- Load the JavaScript module that fetches Pokemon and inserts their sprites. -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
