@@ -14,6 +14,7 @@ export async function getPokemonData(pokemon) {
     console.log(
       error.message,
       ` Could not find ${pokemon} `,
-    ); /* , alert(`${error.message } Could not find ${pokemon}`) */
+      alert(`${error.message} Could not find ${pokemon}`),
+    );
   }
 }
