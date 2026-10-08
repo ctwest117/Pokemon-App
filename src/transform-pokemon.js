@@ -6,6 +6,6 @@ export function transformPokemon(pokemon) {
     backImage: pokemon.sprites.back_default,
     level: pokemon.base_experience,
     height: pokemon.height,
-    order: pokemon.order
+    order: pokemon.order,
   };
 }
